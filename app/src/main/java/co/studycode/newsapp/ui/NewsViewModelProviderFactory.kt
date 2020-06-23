@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import co.studycode.newsapp.NewsApp
 import co.studycode.newsapp.repositories.NewsRepository
 
+@Suppress("UNCHECKED_CAST")
 class NewsViewModelProviderFactory(
     val newsRepository: NewsRepository,
     val app:Application

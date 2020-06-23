@@ -2,14 +2,9 @@ package co.studycode.newsapp.ui.fragments
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.View.VISIBLE
-import android.view.View.inflate
-import android.view.ViewGroup
 import android.widget.AbsListView
 import android.widget.Toast
-import androidx.core.graphics.drawable.DrawableCompat.inflate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -21,7 +16,6 @@ import co.studycode.newsapp.ui.NewsActivity
 import co.studycode.newsapp.ui.NewsViewModel
 import co.studycode.newsapp.utils.Constants.Companion.QUERY_PAGE_SIZE
 import co.studycode.newsapp.utils.Resource
-import kotlinx.android.synthetic.main.activity_news.*
 import kotlinx.android.synthetic.main.fragment_breaking_news.*
 
 class BreakingNewsFragment:Fragment(R.layout.fragment_breaking_news) {
@@ -88,7 +82,7 @@ class BreakingNewsFragment:Fragment(R.layout.fragment_breaking_news) {
             val shouldPaginate = isNotLoadingAndNotLastPage && isAtLastItemPosition && isNotAtBegginingPosition && isTotalItemsMoreThanVisible
                     && isScrolling
             if(shouldPaginate){
-                viewModel.getBreakingNews("us")
+                viewModel.getTopHeadLines("us")
                 isScrolling = false
             }
             //BottomNav Behavioir

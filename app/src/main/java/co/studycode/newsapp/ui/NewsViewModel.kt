@@ -18,7 +18,6 @@ import co.studycode.newsapp.utils.Resource
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.io.IOException
-import java.lang.Error
 
 class NewsViewModel(
     val newsRepository: NewsRepository, app: Application
@@ -32,11 +31,11 @@ class NewsViewModel(
     var searchNewsResponse: NewsResponse? = null
 
     init {
-        getBreakingNews("us")
+        getTopHeadLines("us")
     }
 
-    fun getBreakingNews(countryCode: String) = viewModelScope.launch {
-        safeBreakingNewsCall(countryCode)
+    fun getTopHeadLines(countryCode: String) = viewModelScope.launch {
+        safeTopHeadLinesNewsCall(countryCode)
     }
 
     fun searchNews(searchQuery: String) = viewModelScope.launch {
@@ -90,7 +89,7 @@ class NewsViewModel(
         newsRepository.deleteArticle(article)
     }
 
-    suspend fun safeBreakingNewsCall(countryCode: String) {
+    suspend fun safeTopHeadLinesNewsCall(countryCode: String) {
         breakinNews.postValue(Resource.Loading())
         try {
             if(hasConnection()) {
