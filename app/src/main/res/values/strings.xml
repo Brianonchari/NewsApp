@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">My News</string>
+    <string name="top_headlines">Top Headlines</string>
+    <string name="favourite">My List</string>
+    <string name="search">Search…</string>
+</resources>

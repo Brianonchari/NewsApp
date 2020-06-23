@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph"
+    app:startDestination="@id/breakingNewsFragment">
+
+    <fragment
+        android:id="@+id/breakingNewsFragment"
+        android:name="co.studycode.newsapp.ui.fragments.BreakingNewsFragment"
+        android:label="BreakingNewsFragment" >
+        <action
+            android:id="@+id/action_breakingNewsFragment_to_articlesFragment"
+            app:destination="@id/articlesFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_in_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/savedNewsFragment"
+        android:name="co.studycode.newsapp.ui.fragments.SavedNewsFragment"
+        android:label="SavedNewsFragment" >
+        <action
+            android:id="@+id/action_savedNewsFragment_to_articlesFragment"
+            app:destination="@id/articlesFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_in_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/searchNewsFragment"
+        android:name="co.studycode.newsapp.ui.fragments.SearchNewsFragment"
+        android:label="SearchNewsFragment" >
+        <action
+            android:id="@+id/action_searchNewsFragment_to_articlesFragment"
+            app:destination="@id/articlesFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_in_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/articlesFragment"
+        android:name="co.studycode.newsapp.ui.fragments.ArticleFragment"
+        android:label="ArticlesFragment"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_in_right">
+        <argument
+            android:name="article"
+            app:argType="co.studycode.newsapp.models.Article" />
+    </fragment>
+</navigation>
