@@ -14,14 +14,16 @@ import co.studycode.newsapp.R
 import co.studycode.newsapp.adapters.NewsAdapter
 import co.studycode.newsapp.ui.NewsActivity
 import co.studycode.newsapp.ui.NewsViewModel
-import co.studycode.newsapp.utils.Constants.Companion.QUERY_PAGE_SIZE
+import co.studycode.newsapp.utils.Constants
 import co.studycode.newsapp.utils.Resource
 import kotlinx.android.synthetic.main.fragment_breaking_news.*
+import kotlinx.android.synthetic.main.fragment_breaking_news.paginationProgressBar
+import kotlinx.android.synthetic.main.fragment_business_news.*
 
-class BreakingNewsFragment:Fragment(R.layout.fragment_breaking_news) {
-    lateinit var viewModel:NewsViewModel
-    lateinit var newsAdapter:NewsAdapter
-    val TAG = "BreakingNewsFragment"
+class BusinessNewsFragment : Fragment(R.layout.fragment_business_news) {
+    private val TAG = "BusinessNewsFragment"
+    lateinit var viewModel: NewsViewModel
+    lateinit var newsAdapter: NewsAdapter
 
     var isLoading = false
     var isLastPage = false
@@ -29,14 +31,14 @@ class BreakingNewsFragment:Fragment(R.layout.fragment_breaking_news) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel =(activity as NewsActivity).viewModel
+        viewModel = (activity as NewsActivity).viewModel
         setUpRecyclerView()
         newsAdapter.setOnItemClickListener {
             val bundle = Bundle().apply {
                 putSerializable("article",it)
             }
             findNavController().navigate(
-                R.id.action_breakingNewsFragment_to_articlesFragment,
+                R.id.action_businessNewsFragment_to_articlesFragment,
                 bundle
             )
         }
@@ -46,10 +48,10 @@ class BreakingNewsFragment:Fragment(R.layout.fragment_breaking_news) {
                     hideProgressBar()
                     response.data.let { newsResponse ->
                         newsAdapter.differ.submitList(newsResponse?.articles?.toList())
-                        val totalPagesResult = newsResponse!!.totalResults / QUERY_PAGE_SIZE + 2
+                        val totalPagesResult = newsResponse!!.totalResults / Constants.QUERY_PAGE_SIZE + 2
                         isLastPage = viewModel.topHeadLinesPage == totalPagesResult
                         if(isLastPage){
-                                rvBreakingNews.setPadding(0,0,0,0)
+                            rvBusinessNews.setPadding(0,0,0,0)
                         }
                     }
                 }
@@ -65,11 +67,12 @@ class BreakingNewsFragment:Fragment(R.layout.fragment_breaking_news) {
                 }
             }
         })
+
     }
 
 
-  //Pagination and Scroll Behaviour
-    val scrollListener = object :RecyclerView.OnScrollListener(){
+    //Pagination and Scroll Behaviour
+    val scrollListener = object : RecyclerView.OnScrollListener(){
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
             val layoutManager = recyclerView.layoutManager as LinearLayoutManager
@@ -80,7 +83,7 @@ class BreakingNewsFragment:Fragment(R.layout.fragment_breaking_news) {
             val isNotLoadingAndNotLastPage = !isLoading && !isLastPage
             val isAtLastItemPosition = firstVisibleItemPos + visibleItemCounts>= totalItemCounts
             val isNotAtBegginingPosition = firstVisibleItemPos>=0
-            val isTotalItemsMoreThanVisible = totalItemCounts>= QUERY_PAGE_SIZE
+            val isTotalItemsMoreThanVisible = totalItemCounts>= Constants.QUERY_PAGE_SIZE
             val shouldPaginate = isNotLoadingAndNotLastPage && isAtLastItemPosition && isNotAtBegginingPosition && isTotalItemsMoreThanVisible
                     && isScrolling
             if(shouldPaginate){
@@ -96,23 +99,26 @@ class BreakingNewsFragment:Fragment(R.layout.fragment_breaking_news) {
             }
         }
     }
+
     private fun hideProgressBar() {
         paginationProgressBar.visibility = View.INVISIBLE
         isLoading = false
     }
 
-    private fun showProgressBar(){
+    private fun showProgressBar() {
         paginationProgressBar.visibility = View.VISIBLE
         isLoading = true
     }
 
-    private fun setUpRecyclerView(){
+    private fun setUpRecyclerView() {
         newsAdapter = NewsAdapter()
-        rvBreakingNews.setHasFixedSize(true)
-        rvBreakingNews.apply {
+        rvBusinessNews.setHasFixedSize(true)
+        rvBusinessNews.apply {
             adapter = newsAdapter
-            layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
-            addOnScrollListener(this@BreakingNewsFragment.scrollListener)
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            addOnScrollListener(this@BusinessNewsFragment.scrollListener)
         }
     }
+
 }

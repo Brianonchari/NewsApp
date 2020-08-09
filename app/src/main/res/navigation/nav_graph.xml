@@ -51,4 +51,16 @@
             android:name="article"
             app:argType="co.studycode.newsapp.models.Article" />
     </fragment>
+    <fragment
+        android:id="@+id/businessNewsFragment"
+        android:name="co.studycode.newsapp.ui.fragments.BusinessNewsFragment"
+        android:label="BusinessNewsFragment" >
+        <action
+            android:id="@+id/action_businessNewsFragment_to_articlesFragment"
+            app:destination="@id/articlesFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_in_right"/>
+    </fragment>
 </navigation>

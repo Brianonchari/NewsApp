@@ -25,13 +25,17 @@ class NewsViewModel(
     val TAG = "NewsViewModel"
     val breakinNews: MutableLiveData<Resource<NewsResponse>> = MutableLiveData()
     val searchNews: MutableLiveData<Resource<NewsResponse>> = MutableLiveData()
-    var breakingNewsPage = 1
+    val businessNews:MutableLiveData<Resource<NewsResponse>> = MutableLiveData()
+    var topHeadLinesPage = 1
     var searchNewsPage = 1
-    var breakingNewsResponse: NewsResponse? = null
+    var businessNewsPage = 1
+    var businessNewsResponse:NewsResponse? = null
+    var topHeadLinesResponse: NewsResponse? = null
     var searchNewsResponse: NewsResponse? = null
 
     init {
         getTopHeadLines("us")
+        getBusinessNews("sports")
     }
 
     fun getTopHeadLines(countryCode: String) = viewModelScope.launch {
@@ -40,22 +44,43 @@ class NewsViewModel(
 
     fun searchNews(searchQuery: String) = viewModelScope.launch {
         safeSearchNewsCall(searchQuery)
+    }
 
+    fun getBusinessNews(newsCategory: String) = viewModelScope.launch {
+        safeBusinessNewsCall(newsCategory)
     }
 
     private fun handleBreakingNewsResponse(response: Response<NewsResponse>): Resource<NewsResponse> {
         if (response.isSuccessful) {
             response.body()?.let { resultResponse ->
-                breakingNewsPage++
-                if (breakingNewsResponse == null) {
-                    breakingNewsResponse = resultResponse
+                topHeadLinesPage++
+                if (topHeadLinesResponse == null) {
+                    topHeadLinesResponse = resultResponse
                 } else {
-                    val oldArticles = breakingNewsResponse?.articles
+                    val oldArticles = topHeadLinesResponse?.articles
                     val newArticles = resultResponse.articles
 
                     oldArticles?.addAll(newArticles)
                 }
-                return Resource.Success(breakingNewsResponse ?: resultResponse)
+                return Resource.Success(topHeadLinesResponse ?: resultResponse)
+            }
+        }
+        return Resource.Error(response.message())
+    }
+
+    private fun handleBusinessNews(response: Response<NewsResponse>):Resource<NewsResponse>{
+        if(response.isSuccessful){
+            response.body()?.let {resultResponse->
+                businessNewsPage++
+                if(businessNewsResponse==null){
+                    businessNewsResponse = resultResponse
+                }else{
+                    val oldArticles = businessNewsResponse?.articles
+                    val newArticles = resultResponse.articles
+
+                    oldArticles?.addAll(newArticles)
+                }
+                return Resource.Success(businessNewsResponse?:resultResponse)
             }
         }
         return Resource.Error(response.message())
@@ -79,6 +104,7 @@ class NewsViewModel(
         return Resource.Error(response.message())
     }
 
+    //Room Database Operations
     fun saveArticle(article: Article) = viewModelScope.launch {
         newsRepository.upsert(article)
     }
@@ -89,11 +115,12 @@ class NewsViewModel(
         newsRepository.deleteArticle(article)
     }
 
+    //Fetch Data From Repository
     suspend fun safeTopHeadLinesNewsCall(countryCode: String) {
         breakinNews.postValue(Resource.Loading())
         try {
             if(hasConnection()) {
-                val response = newsRepository.getTopHeadLines(countryCode, breakingNewsPage)
+                val response = newsRepository.getTopHeadLines(countryCode, topHeadLinesPage)
                 breakinNews.postValue(handleBreakingNewsResponse(response))
             }else{
                 breakinNews.postValue(Resource.Error("You have no Internet connection"))
@@ -105,7 +132,6 @@ class NewsViewModel(
                 else -> breakinNews.postValue(Resource.Error("Conversion Error"))
             }
         }
-
     }
 
     suspend fun safeSearchNewsCall(searchQuery: String) {
@@ -124,6 +150,24 @@ class NewsViewModel(
                 else -> searchNews.postValue(Resource.Error("Conversion Error"))
             }
         }
+    }
+
+    suspend fun safeBusinessNewsCall(newsCategory: String){
+        businessNews.postValue(Resource.Loading())
+        try {
+            if(hasConnection()){
+                val response = newsRepository.getBusinessNews(newsCategory, businessNewsPage)
+                businessNews.postValue(handleBusinessNews(response))
+            }else{
+                businessNews.postValue(Resource.Error("You have no active internet network"))
+            }
+        }catch (t:Throwable){
+            Log.d(TAG, "safeBusinessNewsCall: ${t.message}")
+            when(t){
+                is IOException -> businessNews.postValue(Resource.Error("Network Failure"))
+                else -> businessNews.postValue(Resource.Error("Conversion Error"))
+            }
+        }
 
     }
 
@@ -132,12 +176,10 @@ class NewsViewModel(
         val connectivityManager = getApplication<NewsApp>().getSystemService(
             Context.CONNECTIVITY_SERVICE
         ) as ConnectivityManager
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val activeNetwork = connectivityManager.activeNetwork ?: return false
             val capabilities =
                 connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
-
             return when {
                 capabilities.hasTransport(TRANSPORT_WIFI) -> true
                 capabilities.hasTransport(TRANSPORT_CELLULAR) -> true

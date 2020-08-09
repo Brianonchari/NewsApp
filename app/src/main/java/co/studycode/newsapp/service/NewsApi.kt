@@ -28,14 +28,12 @@ interface NewsApi {
         apiKey: String = API_KEY
     ): Response<NewsResponse>
 
-    @GET("v2/everything")
+    @GET("v2/top-headlines")
     suspend fun getBusinessNews(
         @Query("category")
-        businessCategory: String,
+        businessCategory: String="sports",
         @Query("page")
-        pageNumber: Int,
-        @Query("q")
-        searchQuery: String,
+        pageNumber: Int=1,
         @Query("apiKey")
         apiKey: String = API_KEY
     ):Response<NewsResponse>

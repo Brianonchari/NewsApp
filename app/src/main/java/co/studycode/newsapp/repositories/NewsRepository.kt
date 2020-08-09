@@ -4,10 +4,11 @@ import co.studycode.newsapp.db.AppDatabase
 import co.studycode.newsapp.models.Article
 import co.studycode.newsapp.service.NewsApiInstance
 
-class NewsRepository(val db:AppDatabase) {
+open class NewsRepository(val db:AppDatabase) {
 
     suspend fun getTopHeadLines(countryCode:String, pageNumber:Int) = NewsApiInstance.api.getBreakingNews(countryCode,pageNumber)
     suspend fun searchNews(searchQuery:String, pageNumber: Int) = NewsApiInstance.api.searchNews(searchQuery,pageNumber)
+    suspend fun getBusinessNews(newsCategory: String,pageNumber: Int) = NewsApiInstance.api.getBusinessNews(newsCategory,pageNumber)
     suspend fun upsert(article: Article) = db.getArticlesDao().upsert(article)
 
     fun getSavedNews() = db.getArticlesDao().getArticles()
