@@ -22,13 +22,13 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_below="@id/tool_bar"
-        android:autofillHints="@string/search"
-        android:padding="10dp"
-        android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:autofillHints="@string/search"
         android:background="@drawable/edittext_background"
         android:hint="@string/search"
         android:inputType="text"
+        android:padding="10dp"
         android:shadowRadius="@integer/config_navAnimTime" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -37,16 +37,16 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/etSearch"
         android:clipToPadding="false"
-        android:paddingBottom="50dp" />
+        android:paddingBottom="50dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     <ProgressBar
         android:id="@+id/paginationProgressBar"
         style="?attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:visibility="invisible"
         android:layout_centerInParent="true"
-       />
+        android:background="@android:color/transparent"
+        android:visibility="invisible" />
 
 </RelativeLayout>
